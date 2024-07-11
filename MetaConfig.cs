@@ -61,6 +61,9 @@ namespace MetaLimits
         private static readonly List<string> SYNERGYCHESTSPAWN_OPTIONS = new();
         private static readonly List<string> SYNERGYCHESTSPAWN_DESCRIPTIONS = new();
 
+        internal const string SEE_LABEL = "The Gundead's Affinity";
+        private static readonly List<string> SEE_OPTIONS = new();
+        private static readonly List<string> SEE_DESCRIPTIONS = new();
         internal const string CAP_LABEL = "The Bosses' Affinity";
         private static readonly List<string> CAP_OPTIONS = new();
         private static readonly List<string> CAP_DESCRIPTIONS = new();
@@ -471,7 +474,20 @@ namespace MetaLimits
             }
 
 
-            //Boss Block
+            //Enemy Block
+            if (GameStatsManager.Instance.GetFlag(GungeonFlags.ITEMSPECIFIC_AMMONOMICON_COMPLETE))
+            {
+                SEE_OPTIONS.Add("Vanilla".White());
+                SEE_DESCRIPTIONS.Add("No regular enemy HP bars.".White());
+                SEE_OPTIONS.Add("Enemies Exposed".Yellow());
+                SEE_DESCRIPTIONS.Add("Regular enemies have visible HP bars.".Yellow());
+            }
+            else
+            {
+                SEE_OPTIONS.Add("Locked".Gray());
+                SEE_DESCRIPTIONS.Add("Complete the Ammonomicon.".Gray());
+            }
+
             if (GameStatsManager.Instance.GetFlag(GungeonFlags.BOSSKILLED_BOSSRUSH))
             {
                 CAP_OPTIONS.Add("Vanilla".White());
@@ -526,6 +542,7 @@ namespace MetaLimits
             _Gunfig.AddScrollBox(key: SYNERGYFUSE_LABEL, options: SYNERGYFUSE_OPTIONS, info: SYNERGYFUSE_DESCRIPTIONS);
             _Gunfig.AddScrollBox(key: SYNERGYCHESTSPAWN_LABEL, options: SYNERGYCHESTSPAWN_OPTIONS, info: SYNERGYCHESTSPAWN_DESCRIPTIONS);
 
+            _Gunfig.AddScrollBox(key: SEE_LABEL, options: SEE_OPTIONS, info: SEE_DESCRIPTIONS);
             _Gunfig.AddScrollBox(key: CAP_LABEL, options: CAP_OPTIONS, info: CAP_DESCRIPTIONS);
             _Gunfig.AddScrollBox(key: RAT_LABEL, options: RAT_OPTIONS, info: RAT_DESCRIPTIONS);
         }

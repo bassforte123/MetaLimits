@@ -7,6 +7,10 @@ using HarmonyLib;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using Alexandria.Misc;
+using MonoMod.RuntimeDetour;
+using System.Reflection;
+
+
 
 
 namespace MetaLimits
@@ -19,7 +23,7 @@ namespace MetaLimits
     {
         public const string GUID = "bassforte.etg.metalimits";
         public const string NAME = "MetaLimits";
-        public const string VERSION = "1.0.6";
+        public const string VERSION = "1.0.7";
         public const string TEXT_COLOR = "#00FFFF";
 
         internal static float currMagnificence = 0;
@@ -33,11 +37,11 @@ namespace MetaLimits
         {
             ETGModMainBehaviour.WaitForGameManagerStart(GMStart);
         }
-
-        public void GMStart(GameManager g)
+            public void GMStart(GameManager g)
         {
             Log($"{NAME} v{VERSION} started successfully.", TEXT_COLOR);
             MetaConfig.Init();
+            InitQoLHooks();
             configStarted = true;
 
             CustomActions.OnRunStart += initialTonic;
@@ -45,6 +49,7 @@ namespace MetaLimits
             CustomActions.OnRunStart += InitialArmor;
             CustomActions.OnRunStart += InitialCurseArmor;
             CustomActions.OnAnyPlayerCollectedHealth += CureCurse;
+
         }
 
 
@@ -54,6 +59,14 @@ namespace MetaLimits
             harmony.PatchAll();
         }
 
+        private static void InitQoLHooks()
+        {
+            //Set PlayerController Hook (From Gunfig QoL)
+            new Hook(
+              typeof(PlayerController).GetMethod("Awake", BindingFlags.Instance | BindingFlags.Public),
+              typeof(MetaLimitsModule).GetMethod("OnPlayerAwake", BindingFlags.Static | BindingFlags.NonPublic)
+              );
+        }
 
         [HarmonyPatch(typeof(SharedDungeonSettings), nameof(SharedDungeonSettings.RandomShouldBecomeMimic))]
         private class SharedDungeonSettingsPatch
@@ -629,6 +642,50 @@ namespace MetaLimits
                 currMagnificence = __instance.DetermineCurrentMagnificence();
             }
         }
+
+        //Activates Health bars when enemies take damage
+        private static void OnPlayerAwake(Action<PlayerController> orig, PlayerController player)
+        {
+            orig(player);
+            player.OnAnyEnemyReceivedDamage += DoHealthEffects; // health bars (borrowed from Scouter)
+
+        }
+
+
+        private static GameObject VFXHealthBar = null;
+        private static readonly int ScouterId = 821;
+
+        //Sets health bar logic (From Gunfig QoL> from Scouter item)
+        private static void DoHealthEffects(float damageAmount, bool fatal, HealthHaver target)
+        {
+            if (GameManager.Instance.PrimaryPlayer.HasPassiveItem(ScouterId))
+                return;
+            if (GameManager.Instance.CurrentGameType == GameManager.GameType.COOP_2_PLAYER && GameManager.Instance.SecondaryPlayer.HasPassiveItem(ScouterId))
+                return;
+          
+            VFXHealthBar ??= (PickupObjectDatabase.GetById(ScouterId) as RatchetScouterItem).VFXHealthBar;
+
+            Vector3 worldPosition = target.transform.position;
+            float heightOffGround = 1f;
+
+            if (target.GetComponent<SpeculativeRigidbody>() is SpeculativeRigidbody body)
+            {
+                worldPosition = body.UnitCenter.ToVector3ZisY();
+                heightOffGround = worldPosition.y - body.UnitBottomCenter.y;
+                if (MetaConfig._Gunfig.Value(MetaConfig.SEE_LABEL) == "Enemies Exposed" && (bool)body.healthHaver && !body.healthHaver.HasHealthBar && !body.healthHaver.HasRatchetHealthBar && !body.healthHaver.IsBoss)
+                {
+                    body.healthHaver.HasRatchetHealthBar = true;
+                    UnityEngine.Object.Instantiate(VFXHealthBar).GetComponent<SimpleHealthBarController>().Initialize(body, body.healthHaver);
+                }
+            }
+            else if (target.GetComponent<AIActor>() is AIActor actor)
+            {
+                worldPosition = actor.CenterPosition.ToVector3ZisY();
+                if (actor.sprite)
+                    heightOffGround = worldPosition.y - actor.sprite.WorldBottomCenter.y;
+            }
+        }
+
 
         //Modify Boss DPS Cap
         [HarmonyPatch(typeof(HealthHaver), nameof(HealthHaver.Start))]

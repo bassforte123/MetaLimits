@@ -71,6 +71,10 @@ This mod is not designed to work with the similar Pushing the Limits mod but the
    * Kill the Advanced Dragun.
      * Synergy chests have an 10% chance to spawn.
 
+ * The Gundead's Affinity
+   * Complete the Ammonomicon.
+     * Regular enemies have health bars.
+
  * The Bosses' Affinity
    * Complete a Boss Rush.
      * Boss DPS Cap increased by 25%
