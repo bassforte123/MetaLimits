@@ -57,13 +57,29 @@ namespace MetaLimits
         internal const string SYNERGYFUSE_LABEL = "Tonic's Affinity";
         private static readonly List<string> SYNERGYFUSE_OPTIONS = new();
         private static readonly List<string> SYNERGYFUSE_DESCRIPTIONS = new();
+        internal const string SEE_LABEL = "Ser Manuel's Affinity";
+        private static readonly List<string> SEE_OPTIONS = new();
+        private static readonly List<string> SEE_DESCRIPTIONS = new();
+        internal const string CURSE_LABEL = "Daisuke's Affinity";
+        private static readonly List<string> CURSE_OPTIONS = new();
+        private static readonly List<string> CURSE_DESCRIPTIONS = new();
+        internal const string BOSSHIT_LABEL = "Gunsling King's Affinity";
+        private static readonly List<string> BOSSHIT_OPTIONS = new();
+        private static readonly List<string> BOSSHIT_DESCRIPTIONS = new();
+        internal const string MAP_LABEL = "The Lost Adventurer's Affinity";
+        private static readonly List<string> MAP_OPTIONS = new();
+        private static readonly List<string> MAP_DESCRIPTIONS = new();
+        internal const string MONEY_LABEL = "Winchester's Affinity";
+        private static readonly List<string> MONEY_OPTIONS = new();
+        private static readonly List<string> MONEY_DESCRIPTIONS = new();
+        internal const string SECRET_LABEL = "Ledge Goblin's Affinity";
+        private static readonly List<string> SECRET_OPTIONS = new();
+        private static readonly List<string> SECRET_DESCRIPTIONS = new();
+
         internal const string SYNERGYCHESTSPAWN_LABEL = "Advanced Dragun's Affinity";
         private static readonly List<string> SYNERGYCHESTSPAWN_OPTIONS = new();
         private static readonly List<string> SYNERGYCHESTSPAWN_DESCRIPTIONS = new();
 
-        internal const string SEE_LABEL = "The Gundead's Affinity";
-        private static readonly List<string> SEE_OPTIONS = new();
-        private static readonly List<string> SEE_DESCRIPTIONS = new();
         internal const string CAP_LABEL = "The Bosses' Affinity";
         private static readonly List<string> CAP_OPTIONS = new();
         private static readonly List<string> CAP_DESCRIPTIONS = new();
@@ -109,7 +125,7 @@ namespace MetaLimits
                 MARINEPAST_OPTIONS.Add("Vanilla".White());
                 MARINEPAST_DESCRIPTIONS.Add("Normal ammo drop chance.".White());
                 MARINEPAST_OPTIONS.Add("Ample Ammo".WithColor(Ammo));
-                MARINEPAST_DESCRIPTIONS.Add("Increases ammo drop chance by a multiplicative  125%".WithColor(Ammo));
+                MARINEPAST_DESCRIPTIONS.Add("Increases ammo drop chance by a multiplicative 125%".WithColor(Ammo));
             }
             else
             {
@@ -146,11 +162,9 @@ namespace MetaLimits
             if (GameStatsManager.Instance.GetFlag(GungeonFlags.BOSSKILLED_BULLET_PAST))
             {
                 BULLETPAST_OPTIONS.Add("Vanilla".White());
-                BULLETPAST_DESCRIPTIONS.Add("Start with 0 curse and coolness.".White());
-                BULLETPAST_OPTIONS.Add("Cure Curse".WithColor(BrightPink));
-                BULLETPAST_DESCRIPTIONS.Add("Picking up health or armor removes 1 curse point one time per run.".White());
-                BULLETPAST_OPTIONS.Add("Cause Coolness".Cyan());
-                BULLETPAST_DESCRIPTIONS.Add("Start with 1 coolness.".Cyan());
+                BULLETPAST_DESCRIPTIONS.Add("Start with at least 2 blanks per floor.".White());
+                BULLETPAST_OPTIONS.Add("Bonus Blank".Cyan());
+                BULLETPAST_DESCRIPTIONS.Add("Start with at least 3 blanks per floor.".Cyan());
             }
             else
             {
@@ -187,9 +201,9 @@ namespace MetaLimits
             if (GameStatsManager.Instance.GetFlag(GungeonFlags.GUNSLINGER_PAST_KILLED))
             {
                 SLINGERPAST_OPTIONS.Add("Vanilla".White());
-                SLINGERPAST_DESCRIPTIONS.Add("The Paradox and The Slinger cost full Hegemony prices.".White());
-                SLINGERPAST_OPTIONS.Add("Fast Fingers".Green());
-                SLINGERPAST_DESCRIPTIONS.Add("Steal back some Hegemony from The Paradox and The Slinger on the character select screen.".Green());
+                SLINGERPAST_DESCRIPTIONS.Add("Start with 0 coolness.".White());
+                SLINGERPAST_OPTIONS.Add("Create Coolness".WithColor(Orange));
+                SLINGERPAST_DESCRIPTIONS.Add("Start with 2 coolness.".WithColor(Orange));
             }
             else
             {
@@ -376,14 +390,104 @@ namespace MetaLimits
                 MAGNIFICENCE_DESCRIPTIONS.Add("Complete a hunt.".Gray());
             }
 
+            //NPC Block
+            if (GameStatsManager.Instance.GetFlag(GungeonFlags.MONSTERMANUEL_EVER_TALKED))
+            {
+                SEE_OPTIONS.Add("Vanilla".White());
+                SEE_DESCRIPTIONS.Add("Regular enemies have hidden HP.".White());
+                SEE_OPTIONS.Add("Stats Studied".Cyan());
+                SEE_DESCRIPTIONS.Add("Regular enemies have visible HP bars.".Cyan());
+            }
+            else
+            {
+                SEE_OPTIONS.Add("Locked".Gray());
+                SEE_DESCRIPTIONS.Add("Find Ser Manuel in the Gungeon.".Gray());
+            }
+
+            if (GameStatsManager.Instance.GetFlag(GungeonFlags.DAISUKE_CHALLENGE_COMPLETE))
+            {
+                CURSE_OPTIONS.Add("Vanilla".White());
+                CURSE_DESCRIPTIONS.Add("Natural curse accumulation.".White());
+                CURSE_OPTIONS.Add("Curse Cure".Green());
+                CURSE_DESCRIPTIONS.Add("Picking up health or armor removes 1 curse point one time per run. (sound plays)".White());
+                if (GameStatsManager.Instance.GetFlag(GungeonFlags.DAISUKE_MEGA_CHALLENGE_COMPLETE))
+                {
+                    CURSE_OPTIONS.Add("Master Misfortune".Yellow());
+                    CURSE_DESCRIPTIONS.Add("Picking up health or armor removes 1 curse point two times per run. (sound plays)".Yellow());
+                }
+                else
+                {
+                    CURSE_OPTIONS.Add("Locked".Gray());
+                    CURSE_DESCRIPTIONS.Add("Complete a Double Challenge Run.".Gray());
+                }
+            }
+            else
+            {
+                CURSE_OPTIONS.Add("Locked".Gray());
+                CURSE_DESCRIPTIONS.Add("Complete a Challenge Run.".Gray());
+            }
+
+
+
+            if (GameStatsManager.Instance.GetFlag(GungeonFlags.GUNSLING_KING_ACHIEVEMENT_REWARD_GIVEN))
+            {
+                BOSSHIT_OPTIONS.Add("Vanilla".White());
+                BOSSHIT_DESCRIPTIONS.Add("Lose no-damage rewards during boss fights after taking a hit.".White());
+                BOSSHIT_OPTIONS.Add("Battle Boast".Red());
+                BOSSHIT_DESCRIPTIONS.Add("No-damage boss rewards ignore your first hit. (2 in co-op) \"I meant to do that.\"".Red());
+            }
+            else
+            {
+                BOSSHIT_OPTIONS.Add("Locked".Gray());
+                BOSSHIT_DESCRIPTIONS.Add("Receive Gunsling King's reward after completing 10 challenges.".Gray());
+            }
+
+            if (GameStatsManager.Instance.GetFlag(GungeonFlags.LOST_ADVENTURER_CORE_COMPLETE))
+            {
+                MAP_OPTIONS.Add("Vanilla".White());
+                MAP_DESCRIPTIONS.Add("Maps have a 0.03% chance to spawn as a room pickup reward.".White());
+                MAP_OPTIONS.Add("Memorized Maps".Green());
+                MAP_DESCRIPTIONS.Add("Maps gain an additional flat 1% chance to spawn per room clear.".Green());
+            }
+            else
+            {
+                MAP_OPTIONS.Add("Locked".Gray());
+                MAP_DESCRIPTIONS.Add("Help the Lost Adventurer on all five floors.".Gray());
+            }
+
+            if (GameStatsManager.Instance.GetFlag(GungeonFlags.WINCHESTER_ACHIEVEMENT_REWARD_GIVEN))
+            {
+                MONEY_OPTIONS.Add("Vanilla".White());
+                MONEY_DESCRIPTIONS.Add("No starting casings.".White());
+                MONEY_OPTIONS.Add("Persistent Prizes".Yellow());
+                MONEY_DESCRIPTIONS.Add("Start with 15 casings.".Yellow());
+            }
+            else
+            {
+                MONEY_OPTIONS.Add("Locked".Gray());
+                MONEY_DESCRIPTIONS.Add("Win three of Winchester's games and claim his reward.".Gray());
+            }
+
+            if (GameStatsManager.Instance.GetFlag(GungeonFlags.LEDGEGOBLIN_RECEIVED_REWARD))
+            {
+                SECRET_OPTIONS.Add("Vanilla".White());
+                SECRET_DESCRIPTIONS.Add("Secret Rooms cannot be detected using guns with infinite ammo.".White());
+                SECRET_OPTIONS.Add("Frustrated Findings".WithColor(Ammo));
+                SECRET_DESCRIPTIONS.Add("Infinite ammo guns can crack breakable walls.".WithColor(Ammo));
+            }
+            else
+            {
+                SECRET_OPTIONS.Add("Locked".Gray());
+                SECRET_DESCRIPTIONS.Add("Receive the reward for tormenting Ledge Goblin.".Gray());
+            }
 
             //Synergy Block
             if (GameStatsManager.Instance.GetFlag(GungeonFlags.SORCERESS_BLESSED_MODE_COMPLETE))
             {
                 SYNERGYCHEST_OPTIONS.Add("Vanilla".White());
                 SYNERGYCHEST_DESCRIPTIONS.Add("Synergy chests have about a 50% chance of success.".White());
-                SYNERGYCHEST_OPTIONS.Add("Blessed Synergy".Green());
-                SYNERGYCHEST_DESCRIPTIONS.Add("Synergy chests have an 80% chance of success.".Green());
+                SYNERGYCHEST_OPTIONS.Add("Blessed Synergy".Red());
+                SYNERGYCHEST_DESCRIPTIONS.Add("Synergy chests have an 80% chance of success.".Red());
             }
             else
             {
@@ -441,8 +545,8 @@ namespace MetaLimits
             {
                 SYNERGYFUSE_OPTIONS.Add("Vanilla".White());
                 SYNERGYFUSE_DESCRIPTIONS.Add("Natural synergy chests always have a fuse.".White());
-                SYNERGYFUSE_OPTIONS.Add("Faster than Fuses".WithColor(Orange));
-                SYNERGYFUSE_DESCRIPTIONS.Add("Synergy chests have a regular fuse rate. Carries over to next unlock tier.".White());
+                SYNERGYFUSE_OPTIONS.Add("Faster than Fuses".Blue());
+                SYNERGYFUSE_DESCRIPTIONS.Add("Synergy chests have a regular fuse rate. Carries over to next unlock tier.".Blue());
                 if(GameStatsManager.Instance.GetPlayerStatValue(TrackedStats.META_CURRENCY) >= 500f || GameStatsManager.Instance.GetFlag(GungeonFlags.TONIC_IS_LOADED))
                 {
                     SYNERGYFUSE_OPTIONS.Add("Better than Bonus Stages".Green());
@@ -474,20 +578,7 @@ namespace MetaLimits
             }
 
 
-            //Enemy Block
-            if (GameStatsManager.Instance.GetFlag(GungeonFlags.ITEMSPECIFIC_AMMONOMICON_COMPLETE))
-            {
-                SEE_OPTIONS.Add("Vanilla".White());
-                SEE_DESCRIPTIONS.Add("No regular enemy HP bars.".White());
-                SEE_OPTIONS.Add("Enemies Exposed".Yellow());
-                SEE_DESCRIPTIONS.Add("Regular enemies have visible HP bars.".Yellow());
-            }
-            else
-            {
-                SEE_OPTIONS.Add("Locked".Gray());
-                SEE_DESCRIPTIONS.Add("Complete the Ammonomicon.".Gray());
-            }
-
+            //Boss Block
             if (GameStatsManager.Instance.GetFlag(GungeonFlags.BOSSKILLED_BOSSRUSH))
             {
                 CAP_OPTIONS.Add("Vanilla".White());
@@ -537,12 +628,19 @@ namespace MetaLimits
 
             _Gunfig.AddScrollBox(key: MAGNIFICENCE_LABEL, options: MAGNIFICENCE_OPTIONS, info: MAGNIFICENCE_DESCRIPTIONS);
 
+            _Gunfig.AddScrollBox(key: SEE_LABEL, options: SEE_OPTIONS, info: SEE_DESCRIPTIONS);
+            _Gunfig.AddScrollBox(key: CURSE_LABEL, options: CURSE_OPTIONS, info: CURSE_DESCRIPTIONS);
+            _Gunfig.AddScrollBox(key: BOSSHIT_LABEL, options: BOSSHIT_OPTIONS, info: BOSSHIT_DESCRIPTIONS);
+            _Gunfig.AddScrollBox(key: MAP_LABEL, options: MAP_OPTIONS, info: MAP_DESCRIPTIONS);
+            _Gunfig.AddScrollBox(key: MONEY_LABEL, options: MONEY_OPTIONS, info: MONEY_DESCRIPTIONS);
+            _Gunfig.AddScrollBox(key: SECRET_LABEL, options: SECRET_OPTIONS, info: SECRET_DESCRIPTIONS);
+
             _Gunfig.AddScrollBox(key: SYNERGYFACTOR_LABEL, options: SYNERGYFACTOR_OPTIONS, info: SYNERGYFACTOR_DESCRIPTIONS);
             _Gunfig.AddScrollBox(key: SYNERGYCHEST_LABEL, options: SYNERGYCHEST_OPTIONS, info: SYNERGYCHEST_DESCRIPTIONS);
             _Gunfig.AddScrollBox(key: SYNERGYFUSE_LABEL, options: SYNERGYFUSE_OPTIONS, info: SYNERGYFUSE_DESCRIPTIONS);
             _Gunfig.AddScrollBox(key: SYNERGYCHESTSPAWN_LABEL, options: SYNERGYCHESTSPAWN_OPTIONS, info: SYNERGYCHESTSPAWN_DESCRIPTIONS);
 
-            _Gunfig.AddScrollBox(key: SEE_LABEL, options: SEE_OPTIONS, info: SEE_DESCRIPTIONS);
+
             _Gunfig.AddScrollBox(key: CAP_LABEL, options: CAP_OPTIONS, info: CAP_DESCRIPTIONS);
             _Gunfig.AddScrollBox(key: RAT_LABEL, options: RAT_OPTIONS, info: RAT_DESCRIPTIONS);
         }

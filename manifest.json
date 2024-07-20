@@ -1,12 +1,12 @@
 {
 	"name": "MetaLimits",
-	"version_number": "1.0.1",
+	"version_number": "2.0.0",
 	"website_url": "https://github.com/bassforte123/MetaLimits",
 	"description": "An Enter the Gungeon mod that provides optional permanent perks for completing various milestones.",
 	"dependencies": [
 		"BepInEx-BepInExPack_EtG-5.4.2101",
-		"MtG_API-Mod_the_Gungeon_API-1.7.0",
-		"Alexandria-Alexandria-0.4.0",
-		"CaptainPretzel-Gunfig-1.0.3"
+		"MtG_API-Mod_the_Gungeon_API-1.7.7",
+		"Alexandria-Alexandria-0.4.5",
+		"CaptainPretzel-Gunfig-1.1.1"
 	]
 }

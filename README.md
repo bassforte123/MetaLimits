@@ -8,7 +8,7 @@ This mod is not designed to work with the similar Pushing the Limits mod but the
 
  * The Pilot's Affinity
    * Kill the Pilot's Past.
-     * More Mimics - Mimic chests spawn an additive 10% of the time.
+     * Mimic chests spawn an additive 10% of the time.
 
  * The Marine's Affinity
    * Kill the Marine's Past.
@@ -24,8 +24,7 @@ This mod is not designed to work with the similar Pushing the Limits mod but the
 
  * The Bullet's Affinity
    * Kill the Bullet's Past.
-     * Picking up health or armor removes 1 curse point one time per run.
-     * Start with 1 coolness.
+     * Start with 3 blanks per floor.
 
  * The Robot's Affinity
    * Kill the Robot's Past.
@@ -36,9 +35,9 @@ This mod is not designed to work with the similar Pushing the Limits mod but the
      * Glitch chest appearance rate increased to 0.6%
 
  * The Slinger's Affinity
-   * Kill the Slinger's Past, have at least 50 Hegemony, and double dodge roll (if you feel like it).
-     * Steal back some Hegemony from The Paradox and The Slinger on the character screen. Super Tonic unlocked.
-
+   * Kill the Slinger's Past.
+     * Start with 2 coolness.
+	 
  * The Cultist's Affinity
    * Complete a Co-op Run.
      * Spawn a duplicate chest at the start of Co-op Mode.
@@ -53,27 +52,49 @@ This mod is not designed to work with the similar Pushing the Limits mod but the
 
  * Frifle and Mauser's Affinity
    * Complete hunts.
-     * Magnificence reroll chance reduced to a minimum of 30%/40%/50%/70%
+     * Magnificence reroll chance reduced to as low as 30%/40%/50%/70%
 
- * Sorceress's Affinity
-   * Complete a Blessed Run.
-     * Synergy chests have an 80% chance of success.
+ * Ser Manuel's Affinity
+   * Find Ser Manuel in the Gungeon.
+     * Regular enemies have visible HP bars.
+
+ * Daisuke's Affinity
+   * Complete Cursed and Double Cursed runs
+     * Healing or picking up Armor removes 1 point of Curse up to 2 times.
+
+ * Gunsling King's Affinity
+   * Complete 10 Gunsling King challenges.
+     * First hit in a boss fight is ignored for no-hit rewards. (twice in co-op)
+
+ * The Lost Adventurer's Affinity
+   * Complete The Lost Adventuerer's map on each floor and collect his reward.
+     * Maps have an additional 1% chance per room clear to drop.
+
+ * Winchester's Affinity
+   * Win 3 of Winchester's games.
+     * Start each run with 15 casings.
+
+ * Ledge Goblin's Affinity
+   * Collect the reward from knocking Ledge Goblin's helmet over enough times.
+     * Infinite ammo guns can crack breakable walls..
 
  * Tinker's Affinity
    * Build Elevator Shortcuts.
      * Synergy Factor becomes increasingly more powerful making it more easy to find synergies.
 
+ * Sorceress's Affinity
+   * Complete a Blessed Run.
+     * Synergy chests have an 80% chance of success.
+
  * Tonic's Affinity
    * Complete a Turbo Run.
      * Synergy chests are no longer guaranteed to have a fuse.
+	   * Have at least 500 Hegemony, and double dodge roll (if you feel like it).
+	     * Super Tonic unlocked.
 
  * Advanced Dragun's Affinity
    * Kill the Advanced Dragun.
      * Synergy chests have an 10% chance to spawn.
-
- * The Gundead's Affinity
-   * Complete the Ammonomicon.
-     * Regular enemies have health bars.
 
  * The Bosses' Affinity
    * Complete a Boss Rush.
@@ -82,3 +103,6 @@ This mod is not designed to work with the similar Pushing the Limits mod but the
  * Resourceful Rat's Affinity
    * Kill the Resourceful Rat.
      * The Resourceful Rat will leave your items alone.
+	 
+-------------------------------------	 
+Thanks again to SpecialAPI and Captain Pretzel on the Mod the Gungeon Discord for their help in debugging.

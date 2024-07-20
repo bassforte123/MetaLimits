@@ -23,21 +23,23 @@ namespace MetaLimits
     {
         public const string GUID = "bassforte.etg.metalimits";
         public const string NAME = "MetaLimits";
-        public const string VERSION = "1.0.7";
+        public const string VERSION = "2.0.0";
         public const string TEXT_COLOR = "#00FFFF";
 
         internal static float currMagnificence = 0;
         internal static bool configStarted = false;
-        internal static bool curseCure1 = true;
-        internal static bool curseCure2 = true;
+        internal static int curseCure1 = 0;
+        internal static int curseCure2 = 0;
         internal static bool CostsFlag = true;
         public static bool startChest = true;
+        internal static int boastEnabled = 1;
+
 
         public void Start()
         {
             ETGModMainBehaviour.WaitForGameManagerStart(GMStart);
         }
-            public void GMStart(GameManager g)
+        public void GMStart(GameManager g)
         {
             Log($"{NAME} v{VERSION} started successfully.", TEXT_COLOR);
             MetaConfig.Init();
@@ -45,11 +47,8 @@ namespace MetaLimits
             configStarted = true;
 
             CustomActions.OnRunStart += initialTonic;
-            CustomActions.OnRunStart += initialCoolness;
-            CustomActions.OnRunStart += InitialArmor;
-            CustomActions.OnRunStart += InitialCurseArmor;
+            CustomActions.OnRunStart += initialStats;
             CustomActions.OnAnyPlayerCollectedHealth += CureCurse;
-
         }
 
 
@@ -139,57 +138,31 @@ namespace MetaLimits
             static void Postfix()
             {
                 if (MetaConfig._Gunfig.Value(MetaConfig.HUNTERPAST_LABEL) == "Refreshed Rewards")
-                GameManager.Instance.PrimaryPlayer.AdditionalChestSpawnChance += .02f; //added chance for rewards incremented each non reward room clear
-            }
-        }
+                    GameManager.Instance.PrimaryPlayer.AdditionalChestSpawnChance += .02f; //added chance for rewards incremented each non reward room clear
 
 
-        private static void InitialCurseArmor(PlayerController arg1, PlayerController arg2, GameManager.GameMode arg3)
-        {
-            curseCure1 = true; //sets a flag so that the curse cure can only activate once per run
-            curseCure2 = true;
-        }
-
-        //Heal a point of Curse once per run by picking up health/armor.
-        private static void CureCurse(HealthPickup arg1, PlayerController player)
-        {
-            if (MetaConfig._Gunfig.Value(MetaConfig.BULLETPAST_LABEL) == "Cure Curse")
-            {
-                if (player.stats.GetStatValue(PlayerStats.StatType.Curse) >= 1) //only activate if the player has curse on them
+                if (MetaConfig._Gunfig.Value(MetaConfig.MAP_LABEL) == "Memorized Maps" && UnityEngine.Random.value < 0.01)
                 {
-                    if (curseCure1 && player == GameManager.Instance.PrimaryPlayer)
-                    {
-                        curseCure1 = false; //resets on Run Start, makes it so Cure only happens once per run
-
-                        StatModifier statModifier = new StatModifier();
-                        statModifier.amount = -1f;
-                        statModifier.modifyType = StatModifier.ModifyMethod.ADDITIVE;
-                        statModifier.statToBoost = PlayerStats.StatType.Curse;
-                        player.ownerlessStatModifiers.Add(statModifier);
-                        player.stats.RecalculateStats(player);
-                    }
-
-                    if (curseCure2 && player == GameManager.Instance.SecondaryPlayer)
-                    {
-                        curseCure2 = false; //resets on Run Start, makes it so Cure only happens once per run
-
-                        StatModifier statModifier = new StatModifier();
-                        statModifier.amount = -1f;
-                        statModifier.modifyType = StatModifier.ModifyMethod.ADDITIVE;
-                        statModifier.statToBoost = PlayerStats.StatType.Curse;
-                        player.ownerlessStatModifiers.Add(statModifier);
-                        player.stats.RecalculateStats(player);
-                    }
+                    PickupObject byId = PickupObjectDatabase.GetById(137);
+                    LootEngine.SpawnItem(byId.gameObject, GameManager.Instance.BestActivePlayer.CenterPosition, Vector2.zero, 0f, doDefaultItemPoof: true);
                 }
             }
         }
 
-        private static void initialCoolness(PlayerController arg1, PlayerController arg2, GameManager.GameMode arg3)
+
+        private static void initialStats(PlayerController arg1, PlayerController arg2, GameManager.GameMode arg3)
         {
-            if (MetaConfig._Gunfig.Value(MetaConfig.BULLETPAST_LABEL) == "Cause Coolness")
+            int curecount = 0;
+            if (MetaConfig._Gunfig.Value(MetaConfig.CURSE_LABEL) == "Curse Cure") curecount = 1;
+            if (MetaConfig._Gunfig.Value(MetaConfig.CURSE_LABEL) == "Master Misfortune") curecount = 2;
+
+            curseCure1 = curecount; //Sets the initial curse cure count;
+            curseCure2 = curecount;
+
+            if (MetaConfig._Gunfig.Value(MetaConfig.SLINGERPAST_LABEL) == "Create Coolness")
             {
                 StatModifier statModifier = new StatModifier();
-                statModifier.amount = 1f;
+                statModifier.amount = 2f; //Sets initial Coolness ammount
                 statModifier.modifyType = StatModifier.ModifyMethod.ADDITIVE;
                 statModifier.statToBoost = PlayerStats.StatType.Coolness;
                 GameManager.Instance.PrimaryPlayer.ownerlessStatModifiers.Add(statModifier);
@@ -201,14 +174,67 @@ namespace MetaLimits
                     GameManager.Instance.SecondaryPlayer.stats.RecalculateStats(GameManager.Instance.SecondaryPlayer);
                 }
             }
-        }
 
-        private static void InitialArmor(PlayerController arg1, PlayerController arg2, GameManager.GameMode arg3)
-        {
             if (MetaConfig._Gunfig.Value(MetaConfig.ROBOTPAST_LABEL) == "Additional Armor")
             {
-                GameManager.Instance.PrimaryPlayer.healthHaver.Armor += 1;
+                GameManager.Instance.PrimaryPlayer.healthHaver.Armor += 1; //Grants extra initial armor
                 if (GameManager.Instance.CurrentGameType == GameManager.GameType.COOP_2_PLAYER) GameManager.Instance.SecondaryPlayer.healthHaver.Armor += 1;
+            }
+
+            if (MetaConfig._Gunfig.Value(MetaConfig.MONEY_LABEL) == "Persistent Prizes")
+            {
+                LootEngine.SpawnCurrency(GameManager.Instance.BestActivePlayer.CenterPosition, 15);
+            }
+
+            if (MetaConfig._Gunfig.Value(MetaConfig.BULLETPAST_LABEL) == "Bonus Blank")
+            {
+                StatModifier blankModifier = new StatModifier();
+                blankModifier.amount = 1f; //Sets Additional Blank Per Floor ammount
+                blankModifier.modifyType = StatModifier.ModifyMethod.ADDITIVE;
+                blankModifier.statToBoost = PlayerStats.StatType.AdditionalBlanksPerFloor;
+                GameManager.Instance.PrimaryPlayer.ownerlessStatModifiers.Add(blankModifier);
+                GameManager.Instance.PrimaryPlayer.stats.RecalculateStats(GameManager.Instance.PrimaryPlayer);
+
+                if (GameManager.Instance.CurrentGameType == GameManager.GameType.COOP_2_PLAYER)
+                {
+                    GameManager.Instance.SecondaryPlayer.ownerlessStatModifiers.Add(blankModifier);
+                    GameManager.Instance.SecondaryPlayer.stats.RecalculateStats(GameManager.Instance.SecondaryPlayer);
+                }
+            }
+        }
+
+        //Heal a point of Curse once per run by picking up health/armor.
+        private static void CureCurse(HealthPickup arg1, PlayerController player)
+        {
+            if (player.stats.GetStatValue(PlayerStats.StatType.Curse) >= 1) //only activate if the player has curse on them
+            {
+                if (curseCure1 > 0 && player == GameManager.Instance.PrimaryPlayer)
+                {
+                    curseCure1 -= 1; //resets on Run Start, makes it so Cure only happens once per run
+
+                    StatModifier statModifier = new StatModifier();
+                    statModifier.amount = -1f;
+                    statModifier.modifyType = StatModifier.ModifyMethod.ADDITIVE;
+                    statModifier.statToBoost = PlayerStats.StatType.Curse;
+                    player.ownerlessStatModifiers.Add(statModifier);
+                    player.stats.RecalculateStats(player);
+
+                    AkSoundEngine.PostEvent("Play_OBJ_power_up_01", arg1.gameObject);
+                }
+
+                if (curseCure2 > 0 && player == GameManager.Instance.SecondaryPlayer)
+                {
+                    curseCure2 -= 1; //resets on Run Start, makes it so Cure only happens once per run
+
+                    StatModifier statModifier = new StatModifier();
+                    statModifier.amount = -1f;
+                    statModifier.modifyType = StatModifier.ModifyMethod.ADDITIVE;
+                    statModifier.statToBoost = PlayerStats.StatType.Curse;
+                    player.ownerlessStatModifiers.Add(statModifier);
+                    player.stats.RecalculateStats(player);
+
+                    AkSoundEngine.PostEvent("Play_OBJ_power_up_01", arg1.gameObject);
+                }
             }
         }
 
@@ -234,7 +260,9 @@ namespace MetaLimits
             return curr;
         }
 
+        /* Depricated feature
 
+        //affects Hegemony taken on character select screen for the Paradox
         [HarmonyPatch(typeof(FoyerCharacterSelectFlag), nameof(FoyerCharacterSelectFlag.OnSelectedCharacterCallback))]
         private class OnSelectedCharacterCallbackPatch
         {
@@ -250,7 +278,7 @@ namespace MetaLimits
             }
         }
 
-        //affects Hegemony taken on character select screen
+        //affects Hegemony taken on character select screen for the Slinger
         [HarmonyPatch(typeof(FoyerCharacterSelectFlag), nameof(FoyerCharacterSelectFlag.OnSelectedCharacterCallback))]
         private class OnSelectedCharacterCallback2Patch
         {
@@ -275,6 +303,7 @@ namespace MetaLimits
                 }
             return curr; //do nothing if flag is off
         }
+        */
 
         public static void initialTonic(PlayerController arg1, PlayerController arg2, GameManager.GameMode arg3)
         {
@@ -290,6 +319,11 @@ namespace MetaLimits
             static void Postfix()
             {
                 GameManager metaInstance = GameManager.Instance;
+
+                //resets the Boss Boast flag every floor
+                if (metaInstance.CurrentGameType == GameManager.GameType.COOP_2_PLAYER) boastEnabled = 2;
+                else boastEnabled = 1;
+                
 
                 if (!(metaInstance.CurrentLevelOverrideState == GameManager.LevelOverrideState.CHARACTER_PAST || metaInstance.CurrentLevelOverrideState == GameManager.LevelOverrideState.FOYER || metaInstance.CurrentLevelOverrideState == GameManager.LevelOverrideState.TUTORIAL)
                 && !GameStatsManager.Instance.rainbowRunToggled && startChest)
@@ -490,7 +524,7 @@ namespace MetaLimits
                 weightedInt.value = 5;
                 chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.GunsLootTable);
             }
-        } 
+        }
 
 
         [HarmonyPatch(typeof(Chest), nameof(Chest.SpewContentsOntoGround))]
@@ -528,7 +562,7 @@ namespace MetaLimits
                     GameManager.Instance.Dungeon.StartCoroutine(__instance.HandleRainbowRunLootProcessing(list));
                     return false;
                 }
-                else {return true; }
+                else { return true; }
             }
 
         }
@@ -624,7 +658,7 @@ namespace MetaLimits
 
         public static float SynergyFuseValue(float curr)
         {
-            if (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYFUSE_LABEL) == "Cut Fuses"|| (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYFUSE_LABEL) == "Better than Bonus Stages")) return curr; //return normal fuse chance
+            if (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYFUSE_LABEL) == "Cut Fuses" || (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYFUSE_LABEL) == "Better than Bonus Stages")) return curr; //return normal fuse chance
             return 1f; //return always have fuse
         }
 
@@ -638,7 +672,7 @@ namespace MetaLimits
                 if (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYCHESTSPAWN_LABEL) == "Synergized Synergy")
                     GameManager.Instance.RewardManager.GlobalSynerchestChance = 0.1f; //chance of a synergy chest spawning
 
-                __instance.S_Shop_Chance = 1000f; //sets shop to always spawn natural S items to test magnificence
+                //__instance.S_Shop_Chance = 1000f; //sets shop to always spawn natural S items to test magnificence
                 currMagnificence = __instance.DetermineCurrentMagnificence();
             }
         }
@@ -655,14 +689,14 @@ namespace MetaLimits
         private static GameObject VFXHealthBar = null;
         private static readonly int ScouterId = 821;
 
-        //Sets health bar logic (From Gunfig QoL> from Scouter item)
+        //Sets health bar logic (From Gunfig QoL > from Scouter item)
         private static void DoHealthEffects(float damageAmount, bool fatal, HealthHaver target)
         {
             if (GameManager.Instance.PrimaryPlayer.HasPassiveItem(ScouterId))
                 return;
             if (GameManager.Instance.CurrentGameType == GameManager.GameType.COOP_2_PLAYER && GameManager.Instance.SecondaryPlayer.HasPassiveItem(ScouterId))
                 return;
-          
+
             VFXHealthBar ??= (PickupObjectDatabase.GetById(ScouterId) as RatchetScouterItem).VFXHealthBar;
 
             Vector3 worldPosition = target.transform.position;
@@ -672,7 +706,7 @@ namespace MetaLimits
             {
                 worldPosition = body.UnitCenter.ToVector3ZisY();
                 heightOffGround = worldPosition.y - body.UnitBottomCenter.y;
-                if (MetaConfig._Gunfig.Value(MetaConfig.SEE_LABEL) == "Enemies Exposed" && (bool)body.healthHaver && !body.healthHaver.HasHealthBar && !body.healthHaver.HasRatchetHealthBar && !body.healthHaver.IsBoss)
+                if (MetaConfig._Gunfig.Value(MetaConfig.SEE_LABEL) == "Stats Studied" && (bool)body.healthHaver && !body.healthHaver.HasHealthBar && !body.healthHaver.HasRatchetHealthBar && !body.healthHaver.IsBoss)
                 {
                     body.healthHaver.HasRatchetHealthBar = true;
                     UnityEngine.Object.Instantiate(VFXHealthBar).GetComponent<SimpleHealthBarController>().Initialize(body, body.healthHaver);
@@ -711,6 +745,47 @@ namespace MetaLimits
             }
         }
 
+        //Undoes the damaged flag when being hit in the floor boss room
+        [HarmonyPatch(typeof(PlayerController), nameof(PlayerController.Damaged))]
+        private class DamagedPlayerPatch
+        {
+            static void Postfix(PlayerController __instance)
+            {
+                RoomHandler _CurrentRoom = __instance.CurrentRoom;
+
+                if (MetaConfig._Gunfig.Value(MetaConfig.BOSSHIT_LABEL) == "Battle Boast" && boastEnabled > 0 &&
+                    _CurrentRoom.area.PrototypeRoomCategory == PrototypeDungeonRoom.RoomCategory.BOSS && _CurrentRoom.area.PrototypeRoomBossSubcategory == PrototypeDungeonRoom.RoomBossSubCategory.FLOOR_BOSS)
+                {
+                    __instance.CurrentRoom.PlayerHasTakenDamageInThisRoom = false;
+                    boastEnabled -= 1;
+                    AkSoundEngine.PostEvent("Play_OBJ_power_up_01", __instance.gameObject);
+                }
+                //Log($"Has taken damage this room: " + __instance.CurrentRoom.PlayerHasTakenDamageInThisRoom, TEXT_COLOR);
+            }
+        }
+
+
+        [HarmonyPatch(typeof(Projectile), nameof(Projectile.OnRigidbodyCollision))]
+        private class OnRigidBodyCollisionPatch
+        {
+            [HarmonyILManipulator]
+            private static void GenerateContentsIL(ILContext il)
+            {
+                ILCursor cursor = new ILCursor(il);
+
+                if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Gun>("get_InfiniteAmmo")))
+                    return;
+                //cursor.MoveBeforeLabels();
+                cursor.Emit(OpCodes.Call, typeof(MetaLimitsModule).GetMethod("InfiniteAmmoCheck"));
+            }
+        }
+
+        public static bool InfiniteAmmoCheck(bool curr)
+        {
+            if (MetaConfig._Gunfig.Value(MetaConfig.SECRET_LABEL) == "Frustrated Findings") return false; //return never infinite ammo so that infinte guns act like regular guns
+            return curr; //normal infinite ammo status
+        }
+
 
         [HarmonyPatch(typeof(PickupObject), nameof(PickupObject.ShouldBeTakenByRat))]
         private class ShouldBeTakenByRatPatch
@@ -726,7 +801,7 @@ namespace MetaLimits
             }
         }
 
-        public static void Log(string text, string color = "#FFFFFF")
+        public static void Log(string text, string color = "#00FFFF")
         {
             ETGModConsole.Log($"<color={color}>{text}</color>");
         }
