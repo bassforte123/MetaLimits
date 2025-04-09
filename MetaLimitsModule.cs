@@ -23,7 +23,7 @@ namespace MetaLimits
     {
         public const string GUID = "bassforte.etg.metalimits";
         public const string NAME = "MetaLimits";
-        public const string VERSION = "2.0.0";
+        public const string VERSION = "2.1.0";
         public const string TEXT_COLOR = "#00FFFF";
 
         internal static float currMagnificence = 0;
@@ -460,8 +460,9 @@ namespace MetaLimits
 
             //Decide type of chest
             if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Starter Chest") chest = Chest.Spawn(GameManager.Instance.RewardManager.D_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
-            if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Evolved Chest") chest = Chest.Spawn(GameManager.Instance.RewardManager.C_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
-            if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Final Chest") chest = Chest.Spawn(GameManager.Instance.RewardManager.B_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
+            else if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Evolved Chest") chest = Chest.Spawn(GameManager.Instance.RewardManager.C_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
+            else if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Final Chest") chest = Chest.Spawn(GameManager.Instance.RewardManager.B_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
+            else if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest" || MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest (Burgle Bowler)") chest = Chest.Spawn(GameManager.Instance.RewardManager.A_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
 
             if (chest != null)
             {
@@ -469,7 +470,7 @@ namespace MetaLimits
                 chest.m_isMimic = false;
                 chest.IsLocked = false;
 
-                if (MetaConfig._Gunfig.Value(MetaConfig.MULTI_LABEL) == "Rainbow Blessing")
+                if (MetaConfig._Gunfig.Value(MetaConfig.MULTI_LABEL) == "Rainbow Blessing" || MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest (Burgle Bowler)")
                     BecomeBlessedChest(chest);
             }
         }
@@ -486,6 +487,11 @@ namespace MetaLimits
             chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.GunsLootTable); //alternates between guns and items
             chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.ItemsLootTable);
             chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.GunsLootTable);
+            chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.ItemsLootTable);
+            chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.GunsLootTable);
+            chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.ItemsLootTable);
+            chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.GunsLootTable);
+            chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.ItemsLootTable);
 
             WeightedInt weightedInt = new WeightedInt();
 
@@ -506,7 +512,7 @@ namespace MetaLimits
                 chest.sprite.renderer.material.SetFloat("_HueTestValue", -4f);
                 weightedInt.value = 3;
             }
-            if (chest.spawnAnimName.StartsWith("silver_"))
+            else if (chest.spawnAnimName.StartsWith("silver_"))
             {
                 chest.sprite.renderer.material.SetFloat("_HueTestValue", -.2f);
                 chest.lootTable.C_Chance = .75f;
@@ -515,7 +521,7 @@ namespace MetaLimits
                 chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.ItemsLootTable);
 
             }
-            if (chest.spawnAnimName.StartsWith("green_"))
+            else if (chest.spawnAnimName.StartsWith("green_"))
             {
                 chest.sprite.renderer.material.SetFloat("_HueTestValue", -.6f);
                 chest.lootTable.B_Chance = .60f;
@@ -523,6 +529,24 @@ namespace MetaLimits
                 chest.lootTable.D_Chance = .20f;
                 weightedInt.value = 5;
                 chest.lootTable.overrideItemLootTables.Add(GameManager.Instance.RewardManager.GunsLootTable);
+            }
+            else if (chest.spawnAnimName.StartsWith("redgold_") && MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest")
+            {
+                chest.sprite.renderer.material.SetFloat("_HueTestValue", -3f);
+                chest.lootTable.A_Chance = 0.6f;
+                chest.lootTable.B_Chance = 0.3f;
+                chest.lootTable.C_Chance = 0.2f;
+                chest.lootTable.D_Chance = 0.1f;
+                weightedInt.value = 6;
+            }
+            else if (chest.spawnAnimName.StartsWith("redgold_") && MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest (Burgle Bowler)")
+            {
+                chest.lootTable.S_Chance = 0.2f;
+                chest.lootTable.A_Chance = 0.7f;
+                chest.lootTable.B_Chance = 0.4f;
+                chest.lootTable.C_Chance = 0.2f;
+                chest.lootTable.D_Chance = 0.2f;
+                weightedInt.value = 8;
             }
         }
 
@@ -535,7 +559,7 @@ namespace MetaLimits
             static bool Prefix(Chest __instance, List<Transform> spawnTransforms)
 
             {
-                if (__instance.IsRainbowChest && (GameStatsManager.Instance.IsRainbowRun || MetaConfig._Gunfig.Value(MetaConfig.MULTI_LABEL) == "Rainbow Blessing") && __instance.transform.position.GetAbsoluteRoom() == GameManager.Instance.Dungeon.data.Entrance)
+                if (__instance.IsRainbowChest && (GameStatsManager.Instance.IsRainbowRun || MetaConfig._Gunfig.Value(MetaConfig.MULTI_LABEL) == "Rainbow Blessing" || MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest (Burgle Bowler)") && __instance.transform.position.GetAbsoluteRoom() == GameManager.Instance.Dungeon.data.Entrance)
                 {
                     List<DebrisObject> list = new List<DebrisObject>();
 
@@ -658,7 +682,7 @@ namespace MetaLimits
 
         public static float SynergyFuseValue(float curr)
         {
-            if (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYFUSE_LABEL) == "Cut Fuses" || (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYFUSE_LABEL) == "Better than Bonus Stages")) return curr; //return normal fuse chance
+            if (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYFUSE_LABEL) == "Faster than Fuses" || (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYFUSE_LABEL) == "Better than Bonus Stages")) return curr; //return normal fuse chance
             return 1f; //return always have fuse
         }
 
@@ -729,7 +753,8 @@ namespace MetaLimits
             {
                 float capChange = 1;
 
-                if (MetaConfig._Gunfig.Value(MetaConfig.CAP_LABEL) == "Bosses Busted") capChange = 1.25f; //DPS cap multiplier
+                if (MetaConfig._Gunfig.Value(MetaConfig.CAP_LABEL) == "Better Bosses") capChange = .75f; //DPS cap multiplier
+                if (MetaConfig._Gunfig.Value(MetaConfig.CAP_LABEL) == "Bosses Busted") capChange = 1.25f; 
 
                 GameLevelDefinition lastLoadedLevelDefinition = GameManager.Instance.GetLastLoadedLevelDefinition();
                 if (__instance.IsBoss && !__instance.IsSubboss && lastLoadedLevelDefinition.bossDpsCap > 0f)

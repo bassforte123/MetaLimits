@@ -1,6 +1,6 @@
 {
 	"name": "MetaLimits",
-	"version_number": "2.0.0",
+	"version_number": "2.1.0",
 	"website_url": "https://github.com/bassforte123/MetaLimits",
 	"description": "An Enter the Gungeon mod that provides optional permanent perks for completing various milestones.",
 	"dependencies": [

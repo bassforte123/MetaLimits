@@ -245,7 +245,23 @@ namespace MetaLimits
                     if (GameStatsManager.Instance.GetFlag(GungeonFlags.BOSSKILLED_LICH))
                     {
                         STARTCHEST_OPTIONS.Add("Final Chest".WithColor(BChest));
-                        STARTCHEST_DESCRIPTIONS.Add("Start with a B rank chest.".WithColor(BChest));
+                        STARTCHEST_DESCRIPTIONS.Add("Start with a B rank chest.".White());
+                        if (GameStatsManager.Instance.GetFlag(GungeonFlags.BOSSKILLED_LICH)
+                            && GameStatsManager.Instance.GetFlag(GungeonFlags.BOSSKILLED_HIGHDRAGUN)
+                            && GameStatsManager.Instance.GetFlag(GungeonFlags.BOSSKILLED_BOSSRUSH)
+                            && GameStatsManager.Instance.GetFlag(GungeonFlags.RESOURCEFUL_RAT_PUNCHOUT_BEATEN)
+                            && GameStatsManager.Instance.GetFlag(GungeonFlags.BOWLER_RAINBOW_RUN_COMPLETE))
+                        {
+                            STARTCHEST_OPTIONS.Add("Mega Chest".Red());
+                            STARTCHEST_DESCRIPTIONS.Add("Start with an A rank chest.".White());
+                            STARTCHEST_OPTIONS.Add("Mega Chest (Burgle Bowler)".Magenta());
+                            STARTCHEST_DESCRIPTIONS.Add("Start with a lite Rainbow chest.".Magenta());
+                        }
+                        else
+                        {
+                            STARTCHEST_OPTIONS.Add("Locked".Gray());
+                            STARTCHEST_DESCRIPTIONS.Add("Defeat the greatest foes of the Gungeon.".Gray());
+                        }
                     }
                     else
                     {
@@ -569,7 +585,7 @@ namespace MetaLimits
                 SYNERGYCHESTSPAWN_OPTIONS.Add("Vanilla".White());
                 SYNERGYCHESTSPAWN_DESCRIPTIONS.Add("Synergy chests have a 5% chance to spawn.".White());
                 SYNERGYCHESTSPAWN_OPTIONS.Add("Synergized Synergy".Magenta());
-                SYNERGYCHESTSPAWN_DESCRIPTIONS.Add("Synergy chests have an 10% chance to spawn.".Magenta());
+                SYNERGYCHESTSPAWN_DESCRIPTIONS.Add("Synergy chests have a 10% chance to spawn.".Magenta());
             }
             else
             {
@@ -583,8 +599,10 @@ namespace MetaLimits
             {
                 CAP_OPTIONS.Add("Vanilla".White());
                 CAP_DESCRIPTIONS.Add("Normal Boss DPS Cap.".White());
+                CAP_OPTIONS.Add("Better Bosses".Blue());
+                CAP_DESCRIPTIONS.Add("Boss DPS Cap decreased by 25%, taking less damage.".White());
                 CAP_OPTIONS.Add("Bosses Busted".Red());
-                CAP_DESCRIPTIONS.Add("Boss DPS Cap increased by 25%".Red());
+                CAP_DESCRIPTIONS.Add("Boss DPS Cap increased by 25%, taking more damage.".Red());
             }
             else
             {

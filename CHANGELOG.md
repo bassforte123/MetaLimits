@@ -1,3 +1,9 @@
+2.1.0 - Added new ultimate unlock under Dungeon Affinity.
+
+2.0.2 - Fixed the synergy fuse perk not working and a minor typo in the descriptions.
+
+2.0.1 - Added an increased difficulty setting to Boss DPS Cap.
+
 2.0.0 - Major overhaul.  Many additional NPCs included to the list.
 		Gundead's Affinity replaced with Ser Manuel.  
 		Bullet Affinity now gives blanks.  

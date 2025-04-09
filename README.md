@@ -45,6 +45,7 @@ This mod is not designed to work with the similar Pushing the Limits mod but the
  * The Gungeon's Affinity
    * Complete the major Gungeon run enders.
      * Start with a free chest from D to B rank depending on how deep you've completed.
+	 * Complete every major Boss milestone to steal from Bowler!
 
  * Bowler's Affinity
    * Complete a Rainbow Run.
@@ -98,6 +99,7 @@ This mod is not designed to work with the similar Pushing the Limits mod but the
 
  * The Bosses' Affinity
    * Complete a Boss Rush.
+     * Boss DPS Cap decreased by 25%
      * Boss DPS Cap increased by 25%
 
  * Resourceful Rat's Affinity
