@@ -23,7 +23,7 @@ namespace MetaLimits
     {
         public const string GUID = "bassforte.etg.metalimits";
         public const string NAME = "MetaLimits";
-        public const string VERSION = "2.1.0";
+        public const string VERSION = "2.1.5";
         public const string TEXT_COLOR = "#00FFFF";
 
         internal static float currMagnificence = 0;
@@ -462,7 +462,7 @@ namespace MetaLimits
             if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Starter Chest") chest = Chest.Spawn(GameManager.Instance.RewardManager.D_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
             else if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Evolved Chest") chest = Chest.Spawn(GameManager.Instance.RewardManager.C_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
             else if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Final Chest") chest = Chest.Spawn(GameManager.Instance.RewardManager.B_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
-            else if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest" || MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest (Burgle Bowler)") chest = Chest.Spawn(GameManager.Instance.RewardManager.A_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
+            else if (MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest" || MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Gigantamax Chest (Burgle Bowler)") chest = Chest.Spawn(GameManager.Instance.RewardManager.A_Chest, GameManager.Instance.Dungeon.data.Entrance.GetCenteredVisibleClearSpot(2, 2, out success));
 
             if (chest != null)
             {
@@ -470,7 +470,7 @@ namespace MetaLimits
                 chest.m_isMimic = false;
                 chest.IsLocked = false;
 
-                if (MetaConfig._Gunfig.Value(MetaConfig.MULTI_LABEL) == "Rainbow Blessing" || MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest (Burgle Bowler)")
+                if (MetaConfig._Gunfig.Value(MetaConfig.MULTI_LABEL) == "Rainbow Blessing" || MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Gigantamax Chest (Burgle Bowler)")
                     BecomeBlessedChest(chest);
             }
         }
@@ -539,7 +539,7 @@ namespace MetaLimits
                 chest.lootTable.D_Chance = 0.1f;
                 weightedInt.value = 6;
             }
-            else if (chest.spawnAnimName.StartsWith("redgold_") && MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest (Burgle Bowler)")
+            else if (chest.spawnAnimName.StartsWith("redgold_") && MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Gigantamax Chest (Burgle Bowler)")
             {
                 chest.lootTable.S_Chance = 0.2f;
                 chest.lootTable.A_Chance = 0.7f;
@@ -559,7 +559,7 @@ namespace MetaLimits
             static bool Prefix(Chest __instance, List<Transform> spawnTransforms)
 
             {
-                if (__instance.IsRainbowChest && (GameStatsManager.Instance.IsRainbowRun || MetaConfig._Gunfig.Value(MetaConfig.MULTI_LABEL) == "Rainbow Blessing" || MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Mega Chest (Burgle Bowler)") && __instance.transform.position.GetAbsoluteRoom() == GameManager.Instance.Dungeon.data.Entrance)
+                if (__instance.IsRainbowChest && (GameStatsManager.Instance.IsRainbowRun || MetaConfig._Gunfig.Value(MetaConfig.MULTI_LABEL) == "Rainbow Blessing" || MetaConfig._Gunfig.Value(MetaConfig.STARTCHEST_LABEL) == "Gigantamax Chest (Burgle Bowler)") && __instance.transform.position.GetAbsoluteRoom() == GameManager.Instance.Dungeon.data.Entrance)
                 {
                     List<DebrisObject> list = new List<DebrisObject>();
 
@@ -613,7 +613,7 @@ namespace MetaLimits
         //Sets the Synergy Chest failure rate
         public static float AssignSynergyChestValue(float curr)
         {
-            if (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYCHEST_LABEL) == "Blessed Synergy") return 0.20f; //failure rate
+            if (MetaConfig._Gunfig.Value(MetaConfig.SYNERGYCHEST_LABEL) == "Blessed Synergy") return -1.0f; //failure rate
             //Log($"SynergyChestChance: " + GameManager.Instance.RewardManager.GlobalSynerchestChance, TEXT_COLOR);
             return curr;
         }

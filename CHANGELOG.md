@@ -1,3 +1,14 @@
+2.1.5 - Turns out Synergy Chests have additional limitations which lower success rate.
+		Synergy Chest Success rate setting boosted to 100% to compensate as chests still aren't certain.
+
+2.1.4 - reverted Synergy Chest change
+
+2.1.3 - Fixed bug causing Synergy Chest Success rate to not work correctly.
+
+2.1.2 - Bugfix.
+
+2.1.1 - Split out new Dungeon Affinity in case player had not completed a Rainbow Run yet.
+
 2.1.0 - Added new ultimate unlock under Dungeon Affinity.
 
 2.0.2 - Fixed the synergy fuse perk not working and a minor typo in the descriptions.

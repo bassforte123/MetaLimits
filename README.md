@@ -85,7 +85,7 @@ This mod is not designed to work with the similar Pushing the Limits mod but the
 
  * Sorceress's Affinity
    * Complete a Blessed Run.
-     * Synergy chests have an 80% chance of success.
+     * Synergy chests always try to succeed. (Can still fail due to rank limitations).
 
  * Tonic's Affinity
    * Complete a Turbo Run.

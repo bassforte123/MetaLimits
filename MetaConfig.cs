@@ -249,13 +249,20 @@ namespace MetaLimits
                         if (GameStatsManager.Instance.GetFlag(GungeonFlags.BOSSKILLED_LICH)
                             && GameStatsManager.Instance.GetFlag(GungeonFlags.BOSSKILLED_HIGHDRAGUN)
                             && GameStatsManager.Instance.GetFlag(GungeonFlags.BOSSKILLED_BOSSRUSH)
-                            && GameStatsManager.Instance.GetFlag(GungeonFlags.RESOURCEFUL_RAT_PUNCHOUT_BEATEN)
-                            && GameStatsManager.Instance.GetFlag(GungeonFlags.BOWLER_RAINBOW_RUN_COMPLETE))
+                            && GameStatsManager.Instance.GetFlag(GungeonFlags.RESOURCEFUL_RAT_PUNCHOUT_BEATEN))
                         {
                             STARTCHEST_OPTIONS.Add("Mega Chest".Red());
                             STARTCHEST_DESCRIPTIONS.Add("Start with an A rank chest.".White());
-                            STARTCHEST_OPTIONS.Add("Mega Chest (Burgle Bowler)".Magenta());
-                            STARTCHEST_DESCRIPTIONS.Add("Start with a lite Rainbow chest.".Magenta());
+                            if (GameStatsManager.Instance.GetFlag(GungeonFlags.BOWLER_RAINBOW_RUN_COMPLETE))
+                            {
+                                STARTCHEST_OPTIONS.Add("Gigantamax Chest (Burgle Bowler)".Magenta());
+                                STARTCHEST_DESCRIPTIONS.Add("Start with a lite Rainbow chest.".Magenta());
+                            }
+                            else
+                            {
+                                STARTCHEST_OPTIONS.Add("Locked".Gray());
+                                STARTCHEST_DESCRIPTIONS.Add("Complete a Rainbow Run.".Gray());
+                            }
                         }
                         else
                         {
@@ -503,7 +510,7 @@ namespace MetaLimits
                 SYNERGYCHEST_OPTIONS.Add("Vanilla".White());
                 SYNERGYCHEST_DESCRIPTIONS.Add("Synergy chests have about a 50% chance of success.".White());
                 SYNERGYCHEST_OPTIONS.Add("Blessed Synergy".Red());
-                SYNERGYCHEST_DESCRIPTIONS.Add("Synergy chests have an 80% chance of success.".Red());
+                SYNERGYCHEST_DESCRIPTIONS.Add("Synergy chests will try to always succeed (can still fail due to rank limitations)".Red());
             }
             else
             {
